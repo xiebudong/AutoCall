@@ -5,6 +5,8 @@ public class ContactPersonWrapper {
 	private ContactPerson mContactPerson;
 	private String mMessageFormat = DEFAULT_MESSAGE_FORMAT;
 	
+	private boolean mIsCalling;
+	
 	public ContactPersonWrapper(ContactPerson contactPerson)
 	{
 		mContactPerson = contactPerson;
@@ -28,5 +30,20 @@ public class ContactPersonWrapper {
 	public void setMessageFormat(String format)
 	{
 		mMessageFormat = format;
+	}
+	
+	public boolean isSupportMessage()
+	{
+		return mContactPerson.getName().length()==11;
+	}
+	
+	public void setIsCalling(boolean isCalling)
+	{
+		mIsCalling = isCalling;
+	}
+	
+	public boolean getIsCalling()
+	{
+		return mIsCalling;
 	}
 }
