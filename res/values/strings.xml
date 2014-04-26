@@ -3,5 +3,10 @@
 
     <string name="app_name">电话精灵</string>
     <string name="double_click_quit_app">再按一次退出应用！</string>
+    
+    <string name="left_menu_setting">设置</string>
+    <string name="left_menu_export">导出通话记录</string>
+    <string name="left_menu_simcard">SIM卡信息</string>
+    <string name="left_menu_about">关于我们</string>
 
 </resources>

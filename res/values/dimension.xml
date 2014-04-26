@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <dimen name="title_txt_size">18sp</dimen>
+    <dimen name="left_menu_title_txt_size">16sp</dimen>
+    <dimen name="title_padding">10dp</dimen>
     
+    <dimen name="txt_size_px_26">18sp</dimen>
+    <dimen name="txt_size_px_25">17sp</dimen>
+    <dimen name="txt_size_px_24">16sp</dimen>
+    <dimen name="txt_size_px_22">15sp</dimen>
+	<dimen name="txt_size_px_20">14sp</dimen>
+    <dimen name="txt_size_px_18">12sp</dimen>
+    <dimen name="txt_size_px_16">10sp</dimen>
+     <dimen name="txt_size_px_14">8sp</dimen>
 </resources>

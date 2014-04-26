@@ -29,4 +29,8 @@
         <color name="v2_left_menu_item_bg_n">#f8f7f6</color>
         <color name="v2_left_menu_item_bg_f">#e5e6e6</color>
         
+        <color name="txt_focus">#c2c0c0</color>
+        <color name="nullcolor">#00000000</color>
+        <color name="warning_bg">#eaa23c</color>
+        
 </resources>
