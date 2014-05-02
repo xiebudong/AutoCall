@@ -63,4 +63,11 @@ public class ContactPerson {
 	{
 		mNote4 = note;
 	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		String s = mName + " : " + mPhoneNumber + " : " + mNote1 + " : " + mNote2 + " : " + mNote3 + " : " + mNote4;
+		return s;
+	}
 }

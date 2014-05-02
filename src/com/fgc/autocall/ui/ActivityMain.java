@@ -7,12 +7,17 @@ import net.simonvt.menudrawer.MenuDrawer;
 
 import com.fgc.autocall.R;
 import com.fgc.autocall.Tools.Tools;
+import com.fgc.autocall.app.component.ContactParser;
+import com.fgc.autocall.app.component.FileLoader;
+import com.fgc.autocall.app.component.FileLoader.LoadObserver;
+import com.fgc.autocall.data.ContactPerson;
 import com.fgc.autocall.ui.component.ButtonTwoState;
 import com.fgc.autocall.ui.component.ButtonTwoState.OnTwoStateSwitchListener;
 
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -154,12 +159,14 @@ public class ActivityMain extends BaseActivity {
 				break;
 			case R.id.layout_warning_ok:
 				Log.i(LOG_TAG, "click layout_warning_ok");
-				mTextOk.setText("ºÏ≤‚÷–...");
+				mTextOk.setText(ActivityMain.this.getResources().getString(R.string.detecting));
 				mCheckFileHandler.sendEmptyMessageDelayed(0, 2000);
+				
 				break;
 			}
 		}
 	};
+	
 	
 	private Handler mCheckFileHandler = new Handler()
 	{
@@ -275,7 +282,7 @@ public class ActivityMain extends BaseActivity {
             LinearLayout endSeperator = (LinearLayout)itemView.findViewById(R.id.layout_end_seperator);
             if (item.mIsGroupEnd)
             {
-            	Log.i(LOG_TAG, "hide end pos: " + position);
+//            	Log.i(LOG_TAG, "hide end pos: " + position);
             	endSeperator.setVisibility(View.GONE);
             }
             else
@@ -285,7 +292,7 @@ public class ActivityMain extends BaseActivity {
             LinearLayout lastSeperator = (LinearLayout)itemView.findViewById(R.id.layout_last_seperator);
             if (position == getCount()-1)
             {
-            	Log.i(LOG_TAG, "show last pos: " + position);
+//            	Log.i(LOG_TAG, "show last pos: " + position);
             	lastSeperator.setVisibility(View.VISIBLE);
             }
             else

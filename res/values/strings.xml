@@ -8,5 +8,8 @@
     <string name="left_menu_export">导出通话记录</string>
     <string name="left_menu_simcard">SIM卡信息</string>
     <string name="left_menu_about">关于我们</string>
+    
+    
+    <string name="detecting">检测中...</string>
 
 </resources>
