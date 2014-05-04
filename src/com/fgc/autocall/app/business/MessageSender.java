@@ -45,7 +45,7 @@ public class MessageSender {
 	    Log.i(LOG_TAG, "msg divide count: " + msgs.size());
 	    for (String msg : msgs)
 	    {
-	    	sms.sendTextMessage(phoneNumber, null, msg, sendPendingIntent, deliverPendingIntent);
+//	    	sms.sendTextMessage(phoneNumber, null, msg, sendPendingIntent, deliverPendingIntent);
 	    }
 	}
 }

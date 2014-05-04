@@ -24,6 +24,7 @@ public class ClientApp  extends Application {
     
 	public void initApp(){
 		Log.i(LOG_TAG, "initApp");
+		Config.initConfig(this);
 	}
 
 	public void finishApp(){

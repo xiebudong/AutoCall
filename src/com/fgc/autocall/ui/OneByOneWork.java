@@ -26,7 +26,7 @@ public class OneByOneWork {
 	public static final int ITEM_STATE_DONE_OK = 3;
 	public static final int ITEM_STATE_DONE_FAILED = 4;
 	
-	private static final long DELAY_CALL = 10*1000;	
+	private static final long DELAY_CALL = 3*1000;	
 	
 	private Context mContext;
 	private Looper mLooper;

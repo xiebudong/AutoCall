@@ -23,6 +23,7 @@ import com.fgc.autocall.ui.component.SideMenu;
 import com.fgc.autocall.ui.component.ButtonTwoState.OnTwoStateSwitchListener;
 import com.fgc.autocall.ui.component.SideMenu.OnMenuItemClickObserver;
 
+import android.app.Instrumentation.ActivityResult;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -66,9 +67,7 @@ public class ActivityMain extends BaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-//		mMenuDrawer = MenuDrawer.attach(this);
-//		mMenuDrawer.setContentView(R.layout.a_main);		
+		super.onCreate(savedInstanceState);		
 		
 		mSideMenu = new SideMenu(this);
 		mSideMenu.getMenuDrawer().setContentView(R.layout.a_main);
@@ -225,20 +224,28 @@ public class ActivityMain extends BaseActivity {
             {
 	            case SideMenu.MENU_INDEX_SETTING:{
 	            	Log.i(LOG_TAG, "MENU_INDEX_SETTING");
+	            	Intent intent = new Intent(ActivityMain.this, ActivitySettings.class);
+	            	startActivity(intent);
 	            	break;
 	            }
 	            case SideMenu.MENU_INDEX_EXPORT_CALL_RECORD:
 	            {
 	            	Log.i(LOG_TAG, "MENU_INDEX_EXPORT_CALL_RECORD");
+	            	Intent intent = new Intent(ActivityMain.this, ActivityExportRecord.class);
+	            	startActivity(intent);
 	            	break;
 	            }
 	            case SideMenu.MENU_INDEX_CHECK_SIM_CARD_INFO:
 	            {
 	            	Log.i(LOG_TAG, "MENU_INDEX_CHECK_SIM_CARD_INFO");
+	            	Intent intent = new Intent(ActivityMain.this, ActivitySimCard.class);
+	            	startActivity(intent);
 	            	break;
 	            }
 	            case SideMenu.MENU_INDEX_ABOUT_US:{
 	            	Log.i(LOG_TAG, "MENU_INDEX_ABOUT_US");
+	            	Intent intent = new Intent(ActivityMain.this, ActivityAboutUs.class);
+	            	startActivity(intent);
 	            	break;
 	            }
             }

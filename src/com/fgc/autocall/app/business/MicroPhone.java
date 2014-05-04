@@ -39,8 +39,8 @@ public class MicroPhone {
 	public void call(String phoneNumber)
 	{
 		Log.i(LOG_TAG, "call: " + phoneNumber);
-		Intent phoneIntent = new Intent("android.intent.action.CALL",
-		Uri.parse("tel:" + phoneNumber));
-		mContext.startActivity(phoneIntent);
+//		Intent phoneIntent = new Intent("android.intent.action.CALL",
+//		Uri.parse("tel:" + phoneNumber));
+//		mContext.startActivity(phoneIntent);
 	}
 }

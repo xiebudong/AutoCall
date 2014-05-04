@@ -37,6 +37,7 @@ public class ActivityStartup extends BaseActivity {
 			}
 			
 		});
+		mApp.initApp();
 	}
 	
 	protected boolean handleMessage(Message msg) {
@@ -65,10 +66,25 @@ public class ActivityStartup extends BaseActivity {
 	}
 
 	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		Log.i(LOG_TAG, "onStart");
+		mBaseHandler.sendEmptyMessageDelayed(HANDLER_WHAT_ID_INIT_APP, 200);
+	}
+	
+	@Override
+	protected void onRestart()
+	{
+		super.onRestart();
+		Log.i(LOG_TAG, "onRestart");
+	}
+	
+	
+	@Override
 	protected void onResume() {
 		super.onResume();
 		Log.i(LOG_TAG, "onResume");
-		mBaseHandler.sendEmptyMessageDelayed(HANDLER_WHAT_ID_INIT_APP, 200);
 	}
 
 	@Override
