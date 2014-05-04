@@ -7,6 +7,7 @@
     <color name="headline_txt">#d2d7e1</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="gray">#dbdbdb</color>
     <color name="active_yellow">#ffb238</color>
 
 	   <color name="v2_normal_bg">#eae9e9</color>
@@ -32,5 +33,9 @@
         <color name="txt_focus">#c2c0c0</color>
         <color name="nullcolor">#00000000</color>
         <color name="warning_bg">#eaa23c</color>
+        
+        <color name="gray_txt">#8b8b92</color>
+        <color name="normal_txt">#25252a</color>
+        <color name="highlight_txt">#44658a</color>
         
 </resources>

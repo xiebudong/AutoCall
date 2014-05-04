@@ -1,24 +1,36 @@
 package com.fgc.autocall.ui;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.simonvt.menudrawer.MenuDrawer;
 
+import com.android.internal.telephony.ITelephony;
 import com.fgc.autocall.R;
 import com.fgc.autocall.Tools.Tools;
+import com.fgc.autocall.app.business.MessageSender;
+import com.fgc.autocall.app.business.MicroPhone;
 import com.fgc.autocall.app.component.ContactParser;
 import com.fgc.autocall.app.component.FileLoader;
 import com.fgc.autocall.app.component.FileLoader.LoadObserver;
+import com.fgc.autocall.constant.Constans;
 import com.fgc.autocall.data.ContactPerson;
+import com.fgc.autocall.data.ContactPersonWrapper;
+import com.fgc.autocall.ui.OneByOneWork.OnWorkingObserver;
 import com.fgc.autocall.ui.component.ButtonTwoState;
+import com.fgc.autocall.ui.component.SideMenu;
 import com.fgc.autocall.ui.component.ButtonTwoState.OnTwoStateSwitchListener;
+import com.fgc.autocall.ui.component.SideMenu.OnMenuItemClickObserver;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.RemoteException;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,22 +50,33 @@ public class ActivityMain extends BaseActivity {
 	
 	private RelativeLayout mLayoutTitleBar;
 	private ButtonTwoState mButtonStartPause;
-	
-	private MenuDrawer mMenuDrawer;
-	private ListView mMenuListView;
-	private MenuAdapter mMenuAdapter;
+		
+	private SideMenu mSideMenu;
 	
 	private LinearLayout mLayoutWraning;
 	private LinearLayout mLayoutWraningOk;
 	private TextView mTextOk;
 	
+	private List<ContactPersonWrapper> mContactPersonWrappers = new ArrayList<ContactPersonWrapper>();
+	
+	private ContactsListViewWrapper mContactListViewWrapper;
+	
+	private OneByOneWork mOneByOneWork;
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mMenuDrawer = MenuDrawer.attach(this);
-		mMenuDrawer.setContentView(R.layout.a_main);		
+//		mMenuDrawer = MenuDrawer.attach(this);
+//		mMenuDrawer.setContentView(R.layout.a_main);		
 		
+		mSideMenu = new SideMenu(this);
+		mSideMenu.getMenuDrawer().setContentView(R.layout.a_main);
+		mSideMenu.setOnMenuItemClickObserver(mOnMenuItemClickObserver);
 		initView();
+		
+		mOneByOneWork = new OneByOneWork(this, getMainLooper());
+		mOneByOneWork.setOnWorkingObserver(mOnWorkingObserver);
 	}
 
 	private void initView()
@@ -74,75 +97,81 @@ public class ActivityMain extends BaseActivity {
 		mLayoutWraningOk.setOnClickListener(mOnClickListener);
 		mTextOk = (TextView)findViewById(R.id.text_ok);
 		
-		initLeftMenu();
+		TextView notice = (TextView)findViewById(R.id.notice1);
+		ListView listView = (ListView)findViewById(R.id.list1);
+		mContactListViewWrapper = new ContactsListViewWrapper(this, notice, listView);
+		
+		mSideMenu.init();
+		loadContactsData();
 	}
 	
-	  private static final int MENU_INDEX_SETTING = 0;
-	  private static final int MENU_INDEX_EXPORT_CALL_RECORD = 1;
-	  private static final int MENU_INDEX_CHECK_SIM_CARD_INFO = 2;
-	  private static final int MENU_INDEX_ABOUT_US = 3;
-    private void initLeftMenu()
-    {
-		View menuView = getLayoutInflater().inflate(R.layout.left_menu, null);
-		mMenuDrawer.setMenuView(menuView);
-		mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
-		mMenuDrawer.setMenuSize(Tools.getScreenWidth(this)*2/3+40);
-		mMenuDrawer.setDropShadowSize(Tools.dip2px(this, 10));
-		
-		
-		Resources resource = getResources();
-		
-		
-    	List<MenuItem> items = new ArrayList<MenuItem>();
-        items.add(MENU_INDEX_SETTING, new MenuItem(resource.getString(R.string.left_menu_setting),
-        												true,
-        												true,
-        												R.drawable.left_menu_setting));
-    	items.add(MENU_INDEX_EXPORT_CALL_RECORD, new MenuItem(resource.getString(R.string.left_menu_export),
-												 true, 
-												 false,
-												 R.drawable.left_menu_export));
-        items.add(MENU_INDEX_CHECK_SIM_CARD_INFO, new MenuItem(resource.getString(R.string.left_menu_simcard),
-												false,
-												true,
-												R.drawable.left_menu_simcard));
-        items.add(MENU_INDEX_ABOUT_US, new MenuItem(resource.getString(R.string.left_menu_about),
-        										 true,
-        										 true,
-        										 R.drawable.left_menu_about_us));
-         
-    	mMenuListView = (ListView)menuView.findViewById(R.id.list_view_menu);
-    	mMenuAdapter = new MenuAdapter(items);
-    	mMenuListView.setAdapter(mMenuAdapter);
-    	mMenuListView.setOnItemClickListener(mItemClickListener);
-    }
-	
-    private class MenuItem {
+	private void loadContactsData()
+	{
+		String sdcardPath = Environment.getExternalStorageDirectory().getPath();
+		String filePath = sdcardPath + "/" + Constans.FileName.FILE_NAME;
+		Log.i(LOG_TAG, "file path: " + filePath);
+		FileLoader fileLoader = new FileLoader(filePath);
+		fileLoader.load(new LoadObserver() {
+			
+			@Override
+			public void onloadOver(boolean isSuccess, List<String> contentList) {
+				// TODO Auto-generated method stub
+				if (!isSuccess)
+				{
+					Log.i(LOG_TAG, "can not get contacts file");
+					mLayoutWraning.setVisibility(View.VISIBLE);
+				}
+				else
+				{
+					Log.i(LOG_TAG, "got contacts file");
+					mLayoutWraning.setVisibility(View.GONE);
+					ContactParser parser = new ContactParser(contentList);
+					List<ContactPerson> persons = new ArrayList<ContactPerson>();
+					parser.parse(persons);
+					mContactPersonWrappers.clear();
+					for (ContactPerson person : persons)
+					{
+						mContactPersonWrappers.add(new ContactPersonWrapper(person));
+						Log.i(LOG_TAG, "person: " + person.toString());
+					}
+					mContactListViewWrapper.add(mContactPersonWrappers);
+					mOneByOneWork.resetContacts(mContactPersonWrappers);
+				}
+			}
+		});
+	}
 
-    	boolean mIsGroupStart;
-    	boolean mIsGroupEnd;
-    	int mIconResId;
-        String mTitle;
-
-        public MenuItem(String title, boolean isGroupStart, boolean isGroupEnd, int iconResId) 
-        {
-            mTitle = title;
-            mIsGroupStart = isGroupStart;
-            mIsGroupEnd = isGroupEnd;
-        	mIconResId = iconResId;
-        }
-    }
-    
 	private OnTwoStateSwitchListener mOnStatePauseSwitchListener = new OnTwoStateSwitchListener()
 	{
 
 		@Override
-		public void onSwitch(boolean isState1) {
+		public void onSwitch(boolean isPositive) {
 			// TODO Auto-generated method stub
-			Log.i(LOG_TAG, "is start: " + isState1);
+			Log.i(LOG_TAG, "is start: " + isPositive);
+			if (isPositive)
+			{
+				// pause
+				mOneByOneWork.pauseWork();
+			}
+			else
+			{
+				// start
+				mOneByOneWork.startWork();
+			}
 		}
 		
 	};
+	
+	private OnWorkingObserver mOnWorkingObserver = new OnWorkingObserver()
+	{
+		@Override
+		public void onDoWork(int index, int workType)
+		{
+			Log.i(LOG_TAG, "working index : " + index + "  working type: " + workType);
+			mContactListViewWrapper.setWorkingState(index, workType);
+		}
+	};
+
 	
 	private OnClickListener mOnClickListener = new OnClickListener() {
 		
@@ -155,13 +184,19 @@ public class ActivityMain extends BaseActivity {
 			{
 			case R.id.title_btn_left:
 				Log.i(LOG_TAG, "click title_btn_left");
-				mMenuDrawer.openMenu();
+				mSideMenu.open();
 				break;
 			case R.id.layout_warning_ok:
 				Log.i(LOG_TAG, "click layout_warning_ok");
-				mTextOk.setText(ActivityMain.this.getResources().getString(R.string.detecting));
-				mCheckFileHandler.sendEmptyMessageDelayed(0, 2000);
-				
+				String detecting = ActivityMain.this.getResources().getString(R.string.warning_detecting);
+				if (detecting.equals(mTextOk.getText()))
+				{
+					Log.w(LOG_TAG, "is detecting !");
+					return;
+				}
+				mTextOk.setText(detecting);
+				loadContactsData();
+				mCheckFileHandler.sendEmptyMessageDelayed(0, 4000);
 				break;
 			}
 		}
@@ -173,144 +208,44 @@ public class ActivityMain extends BaseActivity {
 		@Override
 		public void handleMessage(android.os.Message msg)
 		{
-			mLayoutWraning.setVisibility(View.GONE);
+			mTextOk.setText(ActivityMain.this.getResources().getString(R.string.warning_ok));
 		}
 	};
 
-    private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        	
-//        	Log.i(LOG_TAG, "menu position: " + position);
-            mMenuDrawer.closeMenu();
-            
-            switch(position){
-	            case MENU_INDEX_SETTING:{
+    private OnMenuItemClickObserver mOnMenuItemClickObserver = new OnMenuItemClickObserver()
+    {
+
+		@Override
+		public void onClickMenuItem(int position) {
+			// TODO Auto-generated method stub
+			
+			mSideMenu.close();
+			
+            switch(position)
+            {
+	            case SideMenu.MENU_INDEX_SETTING:{
 	            	Log.i(LOG_TAG, "MENU_INDEX_SETTING");
 	            	break;
 	            }
-	            case MENU_INDEX_EXPORT_CALL_RECORD:
+	            case SideMenu.MENU_INDEX_EXPORT_CALL_RECORD:
 	            {
 	            	Log.i(LOG_TAG, "MENU_INDEX_EXPORT_CALL_RECORD");
 	            	break;
 	            }
-	            case MENU_INDEX_CHECK_SIM_CARD_INFO:
+	            case SideMenu.MENU_INDEX_CHECK_SIM_CARD_INFO:
 	            {
 	            	Log.i(LOG_TAG, "MENU_INDEX_CHECK_SIM_CARD_INFO");
 	            	break;
 	            }
-	            case MENU_INDEX_ABOUT_US:{
+	            case SideMenu.MENU_INDEX_ABOUT_US:{
 	            	Log.i(LOG_TAG, "MENU_INDEX_ABOUT_US");
 	            	break;
 	            }
             }
-        }
+		}
     };
 	
-    private class MenuAdapter extends BaseAdapter {
 
-        private List<MenuItem> mItems;
-
-        MenuAdapter(List<MenuItem> items) {
-            mItems = items;
-        }
-
-        @Override
-        public int getCount() {
-            return mItems.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mItems.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return getItem(position) instanceof MenuItem ? 0 : 1;
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return 2;
-        }
-
-        @Override
-        public boolean isEnabled(int position) {
-            return getItem(position) instanceof MenuItem;
-        }
-
-        @Override
-        public boolean areAllItemsEnabled() {
-            return false;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) 
-        {
-        	if (position<0 || position>=getCount())
-        	{
-        		return null;
-        	}
-        	
-        	LinearLayout itemView = null;
-            MenuItem item = (MenuItem)getItem(position);
-
-            if (convertView == null)
-            {
-            	itemView = (LinearLayout)getLayoutInflater().inflate(R.layout.left_menu_item_title, parent, false);
-            }
-            else
-            {
-            	itemView = (LinearLayout)convertView;
-            }
-            
-            LinearLayout groupSeperator = (LinearLayout)itemView.findViewById(R.id.layout_group_seperator);
-            if (item.mIsGroupStart)
-            {
-            	groupSeperator.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-            	groupSeperator.setVisibility(View.GONE);
-            }
-            LinearLayout endSeperator = (LinearLayout)itemView.findViewById(R.id.layout_end_seperator);
-            if (item.mIsGroupEnd)
-            {
-//            	Log.i(LOG_TAG, "hide end pos: " + position);
-            	endSeperator.setVisibility(View.GONE);
-            }
-            else
-            {
-            	endSeperator.setVisibility(View.VISIBLE);
-            }
-            LinearLayout lastSeperator = (LinearLayout)itemView.findViewById(R.id.layout_last_seperator);
-            if (position == getCount()-1)
-            {
-//            	Log.i(LOG_TAG, "show last pos: " + position);
-            	lastSeperator.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-            	lastSeperator.setVisibility(View.GONE);
-            }
-            ImageView imageIcon = (ImageView)itemView.findViewById(R.id.image_icon);
-            TextView textTitle = (TextView)itemView.findViewById(R.id.text_title);
-            
-            imageIcon.setImageResource(item.mIconResId);
-            textTitle.setText((item.mTitle));
-
-//            itemView.setTag(R.id.mdActiveViewPosition, position);
-
-            return itemView;
-        }
-    }
-    
 	@Override
 	protected boolean ifFinishAppByBackKeyPress(){
 		return true;

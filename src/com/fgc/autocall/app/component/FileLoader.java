@@ -53,6 +53,7 @@ public class FileLoader {
 			File file = new File(mPath);
 			if (!file.exists() || !file.isFile())
 			{
+				Log.w(LOG_TAG, "file not exists");
 				return null;
 			}
 			BufferedReader bufferReader = null;
@@ -82,6 +83,7 @@ public class FileLoader {
 				if (bufferReader != null)
 				{
 					try {
+						Log.i(LOG_TAG, "close reader");
 						bufferReader.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -107,6 +109,7 @@ public class FileLoader {
 
       protected void onPostExecute(List<String> list) 
       {
+    	  Log.i(LOG_TAG, "onPostExecute");
     	  boolean isSuccess = false;
     	  if (list!=null && list.size()>0)
     	  {

@@ -12,4 +12,11 @@
     <dimen name="txt_size_px_18">12sp</dimen>
     <dimen name="txt_size_px_16">10sp</dimen>
      <dimen name="txt_size_px_14">8sp</dimen>
+     
+     <dimen name="padding_px_10">6dp</dimen>
+    <dimen name="padding_px_14">10dp</dimen>
+    <dimen name="padding_px_18">12dp</dimen>
+    <dimen name="padding_px_20">14dp</dimen>
+    <dimen name="padding_px_24">16dp</dimen>
+    <dimen name="padding_px_26">18dp</dimen>
 </resources>

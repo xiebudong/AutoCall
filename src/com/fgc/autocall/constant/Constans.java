@@ -1,6 +1,6 @@
 package com.fgc.autocall.constant;
 
-public class Contacts {
+public class Constans {
 
 	public static class FileName
 	{

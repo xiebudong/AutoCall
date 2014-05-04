@@ -10,6 +10,7 @@
     <string name="left_menu_about">关于我们</string>
     
     
-    <string name="detecting">检测中...</string>
+    <string name="warning_ok">确定</string>
+    <string name="warning_detecting">检测中...</string>
 
 </resources>

@@ -34,16 +34,16 @@ public class ButtonTwoState extends Button{
 
 	
 	private Context mContext;
-	private Drawable mBgState1;
-	private Drawable mBgState2;
+	private Drawable mBgPositive;
+	private Drawable mBgNegative;
 	private OnTwoStateSwitchListener mOnSwitchListener;
 	private boolean mState = true;
 	
 	private void init(Context context)
 	{
 		mContext = context;
-		mBgState1 = getBackground();
-		mBgState2 = getBackground();
+		mBgPositive = getBackground();
+		mBgNegative = getBackground();
 		setOnClickListener(mOnClickListenenr);
 	}
 	
@@ -58,7 +58,7 @@ public class ButtonTwoState extends Button{
 	
 	public interface OnTwoStateSwitchListener
 	{
-		public void onSwitch(boolean isState1);
+		public void onSwitch(boolean isPositive);
 	}
 	
 	public void setOnTwoStateSwitchListener(OnTwoStateSwitchListener listener)
@@ -68,16 +68,16 @@ public class ButtonTwoState extends Button{
 	
 	public void setTwoStateDrawble(Drawable state1, Drawable state2)
 	{
-		mBgState1 = state1;
-		mBgState2 = state2;
-		setBackgroundDrawable(mBgState1);
+		mBgPositive = state1;
+		mBgNegative = state2;
+		setBackgroundDrawable(mBgPositive);
 	}
 	
 	public void setTwoStateDrawble(int stateSrcId1, int stateSrcId2)
 	{
-		mBgState1 = mContext.getResources().getDrawable(stateSrcId1);
-		mBgState2 = mContext.getResources().getDrawable(stateSrcId2);
-		setBackgroundDrawable(mBgState1);
+		mBgPositive = mContext.getResources().getDrawable(stateSrcId1);
+		mBgNegative = mContext.getResources().getDrawable(stateSrcId2);
+		setBackgroundDrawable(mBgPositive);
 	}
 	
 	private void doSwitch()
@@ -85,12 +85,12 @@ public class ButtonTwoState extends Button{
 		if (mState == true)
 		{
 			mState = false;
-			setBackgroundDrawable(mBgState2);
+			setBackgroundDrawable(mBgNegative);
 		}
 		else
 		{
 			mState = true;
-			setBackgroundDrawable(mBgState1);
+			setBackgroundDrawable(mBgPositive);
 		}
 		
 		if (mOnSwitchListener != null)

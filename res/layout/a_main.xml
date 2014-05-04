@@ -20,7 +20,7 @@
     			android:layout_marginBottom="4dp"
     			android:gravity="center_vertical"
     			android:background="@color/warning_bg"
-    			android:visibility="visible"
+    			android:visibility="gone"
             >
             <ImageView 
                 android:layout_width="wrap_content"
@@ -61,19 +61,54 @@
             </LinearLayout>
         </LinearLayout>
         
-        <ListView 
+<!--         <ListView 
         android:id="@+id/list_contact"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:divider="@color/v2_normal_bg"
         android:dividerHeight="2dp"
         android:cacheColorHint="#00000000"
         android:listSelector="#00000000"
         android:padding="8dp"
-        />
+        android:background="@color/active_yellow"
+        /> -->
         
+        <TextView 
+                android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:paddingLeft="10dp"
+            	android:paddingTop="8dp"
+            	android:paddingBottom="4dp"
+            	android:text="联系人列表"
+            />
+        
+        <FrameLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            >
+		        <com.fgc.autocall.ui.component.ListViewRoundCorner
+		         android:id="@+id/list1"
+		         android:layout_width="match_parent"
+		         android:layout_height="300dp"
+		         android:background="@drawable/list_round_bg"
+		         android:cacheColorHint="#00000000" 
+		         android:dividerHeight="1dp"
+        	     android:divider="@color/v2_normal_bg"
+    	         android:listSelector="#00000000"
+    	         android:scrollbars="none"
+		         />
+		        <TextView 
+		            android:id="@+id/notice1"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_gravity="center"
+		            android:textSize="@dimen/txt_size_px_22"
+		            android:text="暂无联系人"
+		            />
+        </FrameLayout>
         	
-    <TextView
+<!--     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -81,6 +116,8 @@
         android:textColor="@color/v2_sub_column_text"
         android:text="向右滑动屏幕试试看。。。" 
         android:textSize="@dimen/txt_size_px_24"
-        />
+        /> -->
+        
+        
 
 </LinearLayout>
