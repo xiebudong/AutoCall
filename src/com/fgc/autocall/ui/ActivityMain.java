@@ -36,6 +36,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -68,6 +69,9 @@ public class ActivityMain extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
+		
+		// keep screen always on
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		mSideMenu = new SideMenu(this);
 		mSideMenu.getMenuDrawer().setContentView(R.layout.a_main);
@@ -252,6 +256,51 @@ public class ActivityMain extends BaseActivity {
 		}
     };
 	
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		Log.d(LOG_TAG, "onNewIntent");
+	}
+
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		Log.i(LOG_TAG, "onStart");
+	}
+	
+	@Override
+	protected void onRestart()
+	{
+		super.onRestart();
+		Log.i(LOG_TAG, "onRestart");
+	}
+	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.i(LOG_TAG, "onResume");
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Log.i(LOG_TAG, "onPause");
+	}
+
+	@Override
+	protected void onStop() {
+		Log.i(LOG_TAG, "onStop");
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.i(LOG_TAG, "onDestroy");
+		mOneByOneWork.stopWork();
+		super.onDestroy();
+	}
 
 	@Override
 	protected boolean ifFinishAppByBackKeyPress(){

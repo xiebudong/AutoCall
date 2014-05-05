@@ -79,6 +79,11 @@ public class OneByOneWork {
 		mWorkHandler.removeCallbacksAndMessages(null);
 	}
 	
+	public void stopWork()
+	{
+		mWorkHandler.removeCallbacksAndMessages(null);
+	}
+	
 	private void endCall()
 	{
 		Log.i(LOG_TAG, "endCall");
@@ -127,6 +132,11 @@ public class OneByOneWork {
 					}
 					Log.i(LOG_TAG, "end call : " + (mCurWorkingIndex-1));
 					endCall();
+					// send message
+					ContactPersonWrapper contactWrapper =  mContactPersonWrappers.get(mCurWorkingIndex-1);
+					MessageSender.instance().send(contactWrapper.getContactPerson().getPhoneNumber(), 
+							contactWrapper.generateShortMessage(), null, null);
+					
 					mCurWorkingIndex = 0;
 					return;
 				}
@@ -137,6 +147,11 @@ public class OneByOneWork {
 				{
 					Log.i(LOG_TAG, "end call : " + indexOk);
 					endCall();
+					// send message
+					ContactPersonWrapper contactWrapper =  mContactPersonWrappers.get(indexOk);
+					MessageSender.instance().send(contactWrapper.getContactPerson().getPhoneNumber(), 
+							contactWrapper.generateShortMessage(), null, null);
+					
 					if (mOnWorkingObserver != null)
 					{
 						mOnWorkingObserver.onDoWork(indexOk, ITEM_STATE_DONE_OK);
@@ -150,9 +165,6 @@ public class OneByOneWork {
 				Log.i(LOG_TAG, "to call : " + contactWrapper.getContactPerson().getName());
 				// call
 				MicroPhone.instance(mContext).call(contactWrapper.getContactPerson().getPhoneNumber());
-				// send message
-				MessageSender.instance().send(contactWrapper.getContactPerson().getPhoneNumber(), 
-						contactWrapper.generateShortMessage(), null, null);
 				
 				mCurWorkingIndex++;
 				mWorkHandler.sendEmptyMessageDelayed(MSG_WHAT_CALL, DELAY_CALL);
