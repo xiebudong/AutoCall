@@ -26,13 +26,13 @@ public class OneByOneWork {
 	public static final int ITEM_STATE_DONE_OK = 3;
 	public static final int ITEM_STATE_DONE_FAILED = 4;
 	
-	private static final long DELAY_CALL = 3*1000;	
 	
 	private Context mContext;
 	private Looper mLooper;
 	private List<ContactPersonWrapper> mContactPersonWrappers = new ArrayList<ContactPersonWrapper>();
 	private OnWorkingObserver mOnWorkingObserver;
 	
+	private int mCallInternal = 30*1000;
 	private WorkHandler mWorkHandler;
 	private int mCurWorkingIndex = 0;
 	
@@ -46,6 +46,7 @@ public class OneByOneWork {
 	public interface OnWorkingObserver
 	{
 		public void onDoWork(int index, int workType);
+		public void onOver(int overIndex, int totalCount);
 	}
 	
 	public void setOnWorkingObserver(OnWorkingObserver observer)
@@ -62,6 +63,15 @@ public class OneByOneWork {
 		
 		mContactPersonWrappers.clear();
 		mContactPersonWrappers.addAll(contactsWrappers);
+	}
+	
+	/**
+	 * @param s
+	 */
+	public void setCallInternal(int internal)
+	{
+		Log.i(LOG_TAG, "setCallInternal: " + internal*1000);
+		mCallInternal = internal*1000;
 	}
 	
 	public void startWork()
@@ -126,14 +136,16 @@ public class OneByOneWork {
 				if (mCurWorkingIndex>=mContactPersonWrappers.size())
 				{
 					Log.w(LOG_TAG, "over");
+					int indexOk = mCurWorkingIndex-1;
 					if (mOnWorkingObserver != null)
 					{
-						mOnWorkingObserver.onDoWork(mCurWorkingIndex-1, ITEM_STATE_DONE_OK);
+						mOnWorkingObserver.onDoWork(indexOk, ITEM_STATE_DONE_OK);
+						mOnWorkingObserver.onOver(indexOk, mContactPersonWrappers.size());
 					}
-					Log.i(LOG_TAG, "end call : " + (mCurWorkingIndex-1));
+					Log.i(LOG_TAG, "end call : " + indexOk);
 					endCall();
 					// send message
-					ContactPersonWrapper contactWrapper =  mContactPersonWrappers.get(mCurWorkingIndex-1);
+					ContactPersonWrapper contactWrapper =  mContactPersonWrappers.get(indexOk);
 					MessageSender.instance().send(contactWrapper.getContactPerson().getPhoneNumber(), 
 							contactWrapper.generateShortMessage(), null, null);
 					
@@ -155,6 +167,7 @@ public class OneByOneWork {
 					if (mOnWorkingObserver != null)
 					{
 						mOnWorkingObserver.onDoWork(indexOk, ITEM_STATE_DONE_OK);
+						mOnWorkingObserver.onOver(indexOk, mContactPersonWrappers.size());
 					}
 				}
 				if (mOnWorkingObserver != null)
@@ -167,7 +180,7 @@ public class OneByOneWork {
 				MicroPhone.instance(mContext).call(contactWrapper.getContactPerson().getPhoneNumber());
 				
 				mCurWorkingIndex++;
-				mWorkHandler.sendEmptyMessageDelayed(MSG_WHAT_CALL, DELAY_CALL);
+				mWorkHandler.sendEmptyMessageDelayed(MSG_WHAT_CALL, mCallInternal);
 				break;
 			}
 		}

@@ -9,8 +9,12 @@ package com.fgc.autocall.app;
 import android.content.Context;
 
 public class Config {
-	static public String CONFIG_GROUP = "FGC";
+	static public final String CONFIG_GROUP = "FGC";
 	// define keys
+	static public final String CONFIG_KEY_CALL_INTERNAL = "call_internal";
+	static public final String CONFIG_KEY_START_CALL_TIME = "start_call_time";
+	static public final String CONFIG_KEY_SIM_CARD_TIME_LENGTH = "sim_card_time_length";
+	static public final String CONFIG_KEY_WARNNING_PHONE_NUMBER = "warnning_phone_number";
 	
 	public static void initConfig(Context context){
 		if(FileConfig.Instance() == null)

@@ -19,8 +19,10 @@ import java.lang.ref.SoftReference;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -460,5 +462,33 @@ public class Tools {
     		}
     	}
 
+    }
+    
+    /**
+     * 
+     * @param String, example: 13:30
+     * @return Calendar
+     */
+    public static Calendar getCalendarForHourAndMinus(String time)
+    {
+		if (null == time)
+		{
+			return new GregorianCalendar();
+		}
+		
+		String[] times = time.split(":|£º");
+		if (times == null || times.length != 2)
+		{
+			return new GregorianCalendar();
+		}
+		
+		int hour = Integer.parseInt(times[0]);
+		int minus = Integer.parseInt(times[1]);
+		
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(Calendar.HOUR_OF_DAY, hour);
+		calendar.set(Calendar.MINUTE, minus);
+				
+		return calendar;
     }
 }

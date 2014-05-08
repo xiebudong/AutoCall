@@ -76,9 +76,9 @@
         <TextView 
                 android:layout_width="match_parent"
             	android:layout_height="wrap_content"
-            	android:paddingLeft="10dp"
-            	android:paddingTop="8dp"
-            	android:paddingBottom="4dp"
+            	android:paddingLeft="@dimen/common_title_padding_left"
+            	android:paddingTop="@dimen/common_title_padding_top"
+            	android:paddingBottom="@dimen/common_title_padding_bottom"
             	android:text="联系人列表"
             />
         
@@ -108,16 +108,46 @@
 		            />
         </FrameLayout>
         	
-<!--     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:textColor="@color/v2_sub_column_text"
-        android:text="向右滑动屏幕试试看。。。" 
-        android:textSize="@dimen/txt_size_px_24"
-        /> -->
-        
+     <TextView 
+        android:layout_width="match_parent"
+      	android:layout_height="wrap_content"
+      	android:paddingLeft="@dimen/common_title_padding_left"
+      	android:paddingTop="4dp"
+      	android:paddingBottom="@dimen/common_title_padding_bottom"
+      	android:text="联系人状态"
+         />
+     <TextView
+        android:id="@+id/contact_state" 
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+		android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp"
+    	android:background="@drawable/list_round_bg"
+    	android:paddingLeft="10dp"
+    	android:paddingTop="4dp"
+      	android:paddingBottom="6dp"
+    	android:text="未开始"
+    />
+     <TextView 
+        android:layout_width="match_parent"
+      	android:layout_height="wrap_content"
+      	android:paddingLeft="@dimen/common_title_padding_left"
+      	android:paddingTop="@dimen/common_title_padding_top"
+      	android:paddingBottom="@dimen/common_title_padding_bottom"
+      	android:text="SIM卡状态"
+      />
+     <TextView
+        android:id="@+id/sim_state" 
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp"
+    	android:background="@drawable/list_round_bg"
+    	android:paddingLeft="10dp"
+    	android:paddingTop="4dp"
+      	android:paddingBottom="6dp"
+    	android:text="正常"
+    /> 
         
 
 </LinearLayout>

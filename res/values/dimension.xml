@@ -19,4 +19,11 @@
     <dimen name="padding_px_20">14dp</dimen>
     <dimen name="padding_px_24">16dp</dimen>
     <dimen name="padding_px_26">18dp</dimen>
+    
+    <dimen name="common_title_padding_left">10dp</dimen>
+    <dimen name="common_title_padding_top">6dp</dimen>
+    <dimen name="common_title_padding_bottom">10dp</dimen>
+    <dimen name="area_padding_top">6dp</dimen>
+    <dimen name="area_margin_left">8dp</dimen>
+    
 </resources>

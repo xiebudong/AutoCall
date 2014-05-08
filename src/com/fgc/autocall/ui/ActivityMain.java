@@ -64,6 +64,9 @@ public class ActivityMain extends BaseActivity {
 	private ContactsListViewWrapper mContactListViewWrapper;
 	
 	private OneByOneWork mOneByOneWork;
+	
+	private TextView mTextContactState;
+	private TextView mTextSimState;
 
 	
 	@Override
@@ -103,6 +106,9 @@ public class ActivityMain extends BaseActivity {
 		TextView notice = (TextView)findViewById(R.id.notice1);
 		ListView listView = (ListView)findViewById(R.id.list1);
 		mContactListViewWrapper = new ContactsListViewWrapper(this, notice, listView);
+		
+		mTextContactState = (TextView)findViewById(R.id.contact_state);
+		mTextSimState = (TextView)findViewById(R.id.sim_state);
 		
 		mSideMenu.init();
 		loadContactsData();
@@ -148,7 +154,7 @@ public class ActivityMain extends BaseActivity {
 	{
 
 		@Override
-		public void onSwitch(boolean isPositive) {
+		public void onSwitch(boolean isPositive, int btnId) {
 			// TODO Auto-generated method stub
 			Log.i(LOG_TAG, "is start: " + isPositive);
 			if (isPositive)
@@ -159,6 +165,8 @@ public class ActivityMain extends BaseActivity {
 			else
 			{
 				// start
+				int internal = mApp.getConfigManager().getCallInternal();
+				mOneByOneWork.setCallInternal(internal);
 				mOneByOneWork.startWork();
 			}
 		}
@@ -172,6 +180,14 @@ public class ActivityMain extends BaseActivity {
 		{
 			Log.i(LOG_TAG, "working index : " + index + "  working type: " + workType);
 			mContactListViewWrapper.setWorkingState(index, workType);
+		}
+
+		@Override
+		public void onOver(int overIndex, int totalCount) {
+			// TODO Auto-generated method stub
+			String noticeOver = "ÒÑÍê³É     " + "( " + (overIndex+1) + "/" + totalCount + " )";
+ 			Log.i(LOG_TAG, "over : " + noticeOver);
+ 			mTextContactState.setText(noticeOver);
 		}
 	};
 

@@ -58,7 +58,7 @@ public class ButtonTwoState extends Button{
 	
 	public interface OnTwoStateSwitchListener
 	{
-		public void onSwitch(boolean isPositive);
+		public void onSwitch(boolean isPositive, int btnId);
 	}
 	
 	public void setOnTwoStateSwitchListener(OnTwoStateSwitchListener listener)
@@ -95,7 +95,7 @@ public class ButtonTwoState extends Button{
 		
 		if (mOnSwitchListener != null)
 		{
-			mOnSwitchListener.onSwitch(mState);
+			mOnSwitchListener.onSwitch(mState, getId());
 		}
 	}
 }
