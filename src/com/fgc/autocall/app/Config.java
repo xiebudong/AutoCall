@@ -1,9 +1,4 @@
-/**
-* @Title: 		com.targetv.client.app.Config.java 
-* @Description: TODO
-* @author 		Ken Lee
-* @date 		2012-12-7 下午4:22:46
-*/
+
 package com.fgc.autocall.app;
 
 import android.content.Context;
@@ -15,6 +10,10 @@ public class Config {
 	static public final String CONFIG_KEY_START_CALL_TIME = "start_call_time";
 	static public final String CONFIG_KEY_SIM_CARD_TIME_LENGTH = "sim_card_time_length";
 	static public final String CONFIG_KEY_WARNNING_PHONE_NUMBER = "warnning_phone_number";
+	static public final String CONFIG_KEY_FUNCTION_SEND_MESSAGE = "function_send_message";
+	static public final String CONFIG_KEY_FUNCTION_CALL = "function_call";
+	static public final String CONFIG_VALUE_YES = "yes";
+	static public final String CONFIG_VALUE_NO = "no";
 	
 	public static void initConfig(Context context){
 		if(FileConfig.Instance() == null)

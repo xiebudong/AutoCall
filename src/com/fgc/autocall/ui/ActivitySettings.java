@@ -15,7 +15,7 @@ import com.fgc.autocall.R;
 import com.fgc.autocall.Tools.StringTools;
 import com.fgc.autocall.Tools.Tools;
 import com.fgc.autocall.ui.component.ButtonTwoState;
-import com.fgc.autocall.ui.component.ButtonTwoState.OnTwoStateSwitchListener;
+import com.fgc.autocall.ui.component.ImageViewTwoState;
 
 public class ActivitySettings extends BaseActivity{
 	private static final String LOG_TAG = "ActivitySettings";
@@ -31,6 +31,9 @@ public class ActivitySettings extends BaseActivity{
 	private ButtonTwoState mBtnStartTime;
 	private ButtonTwoState mBtnSimTimeLenght;
 	private ButtonTwoState mBtnWarnningNumber;
+	
+	private ImageViewTwoState mImageSendMessage;
+	private ImageViewTwoState mImageCall;
 	
 	
 	@Override
@@ -63,19 +66,79 @@ public class ActivitySettings extends BaseActivity{
 		
 		mBtnInternal = (ButtonTwoState)findViewById(R.id.btn_call_internal);
 		mBtnInternal.setTwoStateDrawble(R.drawable.btn_edit, R.drawable.btn_ok);
-		mBtnInternal.setOnTwoStateSwitchListener(mOnStatePauseSwitchListener);
+		mBtnInternal.setOnTwoStateSwitchListener(mOnBtnEidtSwitchListener);
 		mBtnStartTime = (ButtonTwoState)findViewById(R.id.btn_start_time);
 		mBtnStartTime.setTwoStateDrawble(R.drawable.btn_edit, R.drawable.btn_ok);
-		mBtnStartTime.setOnTwoStateSwitchListener(mOnStatePauseSwitchListener);
+		mBtnStartTime.setOnTwoStateSwitchListener(mOnBtnEidtSwitchListener);
 		mBtnSimTimeLenght = (ButtonTwoState)findViewById(R.id.btn_sim_time_length);
 		mBtnSimTimeLenght.setTwoStateDrawble(R.drawable.btn_edit, R.drawable.btn_ok);
-		mBtnSimTimeLenght.setOnTwoStateSwitchListener(mOnStatePauseSwitchListener);
+		mBtnSimTimeLenght.setOnTwoStateSwitchListener(mOnBtnEidtSwitchListener);
 		mBtnWarnningNumber = (ButtonTwoState)findViewById(R.id.btn_warnning_number);
 		mBtnWarnningNumber.setTwoStateDrawble(R.drawable.btn_edit, R.drawable.btn_ok);
-		mBtnWarnningNumber.setOnTwoStateSwitchListener(mOnStatePauseSwitchListener);
+		mBtnWarnningNumber.setOnTwoStateSwitchListener(mOnBtnEidtSwitchListener);
+		
+		mImageSendMessage = (ImageViewTwoState)findViewById(R.id.img_send_message);
+		mImageSendMessage.setTwoStateDrawble(R.drawable.btn_checked_no, R.drawable.btn_checked_yes);
+		if (mApp.getConfigManager().isSendMessage())
+		{	
+			mImageSendMessage.setDefaultState(true);
+		}
+		else
+		{
+			mImageSendMessage.setDefaultState(false);
+		}
+		mImageSendMessage.setOnTwoStateSwitchListener(mOnImageCheckedSwitchListener);
+		mImageCall = (ImageViewTwoState)findViewById(R.id.img_call);
+		mImageCall.setTwoStateDrawble(R.drawable.btn_checked_no, R.drawable.btn_checked_yes);
+		if (mApp.getConfigManager().isCall())
+		{	
+			mImageCall.setDefaultState(true);
+		}
+		else
+		{
+			mImageCall.setDefaultState(false);
+		}
+		mImageCall.setOnTwoStateSwitchListener(mOnImageCheckedSwitchListener);
 	}
 	
-	private OnTwoStateSwitchListener mOnStatePauseSwitchListener = new OnTwoStateSwitchListener()
+	private ImageViewTwoState.OnTwoStateSwitchListener mOnImageCheckedSwitchListener = new ImageViewTwoState.OnTwoStateSwitchListener() {
+		
+		@Override
+		public void onSwitch(boolean isPositive, int imgId) {
+			// TODO Auto-generated method stub
+			switch (imgId)
+			{
+			case R.id.img_send_message:
+				Log.i(LOG_TAG, "click img_send_message");
+				if (isPositive)
+				{
+					Log.i(LOG_TAG, "selected");
+					mApp.getConfigManager().saveFunctionSendMessage(true);
+				}
+				else
+				{
+					Log.i(LOG_TAG, "unselected");
+					mApp.getConfigManager().saveFunctionSendMessage(false);
+				}
+				break;
+			case R.id.img_call:
+				Log.i(LOG_TAG, "click img_call");
+				if (isPositive)
+				{
+					Log.i(LOG_TAG, "selected");
+					mApp.getConfigManager().saveFunctionCall(true);
+				}
+				else
+				{
+					Log.i(LOG_TAG, "unselected");
+					mApp.getConfigManager().saveFunctionCall(false);
+				}
+				break;
+			}
+		}
+	};
+	
+	private ButtonTwoState.OnTwoStateSwitchListener mOnBtnEidtSwitchListener = new ButtonTwoState.OnTwoStateSwitchListener()
 	{
 
 		@Override

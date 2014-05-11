@@ -68,6 +68,17 @@ public class StringTools {
 	 * @return 验证通过返回true
 	 */
 	public static boolean isPhone(String str) { 
+		
+		if (str == null || str.length() == 0)
+		{
+			return false;
+		}
+		
+		if (str.startsWith("0"))
+		{
+			return true;
+		}
+		
 		Pattern p1 = null,p2 = null;
 		Matcher m = null;
 		boolean b = false;  

@@ -1,6 +1,12 @@
 package com.fgc.autocall.data;
 
+import android.util.Log;
+
+import com.fgc.autocall.Tools.StringTools;
+
 public class ContactPersonWrapper {
+	private static final String LOG_TAG = "ContactPersonWrapper";
+	
 	private static final String DEFAULT_MESSAGE_FORMAT = "%您好，您预订的商品%将于2014年%上架销售，价格为%元，敬请关注，谢谢。";
 	private ContactPerson mContactPerson;
 	private String mMessageFormat = DEFAULT_MESSAGE_FORMAT;
@@ -34,7 +40,16 @@ public class ContactPersonWrapper {
 	
 	public boolean isSupportMessage()
 	{
-		return mContactPerson.getName().length()==11;
+		boolean isMobile = StringTools.isMobile(mContactPerson.getPhoneNumber());
+		if (isMobile)
+		{
+			Log.i(LOG_TAG, mContactPerson.getPhoneNumber() + "is mobile");
+		}
+		else
+		{
+			Log.i(LOG_TAG, mContactPerson.getPhoneNumber() + "is not mobile");
+		}
+		return isMobile;
 	}
 	
 	public void setIsCalling(boolean isCalling)

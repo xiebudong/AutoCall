@@ -92,4 +92,54 @@ public class ConfigManager {
 	{
 		return Config.getValue(Config.CONFIG_KEY_WARNNING_PHONE_NUMBER, null);
 	}
+	
+	public void saveFunctionSendMessage(boolean isSend)
+	{
+		if (isSend)
+		{
+			Config.setValue(Config.CONFIG_KEY_FUNCTION_SEND_MESSAGE, Config.CONFIG_VALUE_YES);
+		}
+		else
+		{
+			Config.setValue(Config.CONFIG_KEY_FUNCTION_SEND_MESSAGE, Config.CONFIG_VALUE_NO);
+		}
+	}
+	
+	public boolean isSendMessage()
+	{
+		String isSendString = Config.getValue(Config.CONFIG_KEY_FUNCTION_SEND_MESSAGE, Config.CONFIG_VALUE_YES);
+		if (Config.CONFIG_VALUE_YES.equals(isSendString))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public void saveFunctionCall(boolean isCall)
+	{
+		if (isCall)
+		{
+			Config.setValue(Config.CONFIG_KEY_FUNCTION_CALL, Config.CONFIG_VALUE_YES);
+		}
+		else
+		{
+			Config.setValue(Config.CONFIG_KEY_FUNCTION_CALL, Config.CONFIG_VALUE_NO);
+		}
+	}
+	
+	public boolean isCall()
+	{
+		String isCallString = Config.getValue(Config.CONFIG_KEY_FUNCTION_CALL, Config.CONFIG_VALUE_YES);
+		if (Config.CONFIG_VALUE_YES.equals(isCallString))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

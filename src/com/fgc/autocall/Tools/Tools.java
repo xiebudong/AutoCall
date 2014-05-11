@@ -491,4 +491,41 @@ public class Tools {
 				
 		return calendar;
     }
+    
+    /**
+     * may be need some permission.
+     * @param fileName
+     * @param dirPath
+     * @return
+     */
+    public static boolean isExistOneFileInOneDir(String fileName, String dirPath)
+    {
+    	if (fileName == null || dirPath == null)
+    	{
+    		Log.e(LOG_TAG, "check param !");
+    		return false;
+    	}
+    	File dir = new File(dirPath);
+    	if (!dir.isDirectory())
+    	{
+    		Log.e(LOG_TAG, "dirPaht is not a dir !");
+    		return false;
+    	}
+    	
+    	String[] files = dir.list();
+    	if (files == null || files.length == 0)
+    	{
+    		return false;
+    	}
+    	
+    	for (String s : files)
+    	{
+    		if (fileName.equals(s))
+    		{
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
 }

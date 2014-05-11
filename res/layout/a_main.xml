@@ -78,7 +78,7 @@
             	android:layout_height="wrap_content"
             	android:paddingLeft="@dimen/common_title_padding_left"
             	android:paddingTop="@dimen/common_title_padding_top"
-            	android:paddingBottom="@dimen/common_title_padding_bottom"
+            	android:paddingBottom="4dp"
             	android:text="联系人列表"
             />
         
@@ -90,7 +90,7 @@
 		        <com.fgc.autocall.ui.component.ListViewRoundCorner
 		         android:id="@+id/list1"
 		         android:layout_width="match_parent"
-		         android:layout_height="300dp"
+		         android:layout_height="280dp"
 		         android:background="@drawable/list_round_bg"
 		         android:cacheColorHint="#00000000" 
 		         android:dividerHeight="1dp"

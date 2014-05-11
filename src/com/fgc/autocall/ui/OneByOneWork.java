@@ -36,6 +36,9 @@ public class OneByOneWork {
 	private WorkHandler mWorkHandler;
 	private int mCurWorkingIndex = 0;
 	
+	private boolean mIsCall = true;
+	private boolean mIsSendMessage = true;
+	
 	public OneByOneWork(Context context, Looper looper)
 	{
 		mContext = context;
@@ -74,13 +77,15 @@ public class OneByOneWork {
 		mCallInternal = internal*1000;
 	}
 	
-	public void startWork()
+	public void startWork(boolean isCall, boolean isSendMessage)
 	{
 		if (mContactPersonWrappers.size()==0)
 		{
 			Log.w(LOG_TAG, "not start, wrappers size is 0");
 			return;
 		}
+		mIsCall = isCall;
+		mIsSendMessage = isSendMessage;
 		mWorkHandler.sendEmptyMessageDelayed(MSG_WHAT_CALL, 3000);
 	}
 	
@@ -146,8 +151,11 @@ public class OneByOneWork {
 					endCall();
 					// send message
 					ContactPersonWrapper contactWrapper =  mContactPersonWrappers.get(indexOk);
-					MessageSender.instance().send(contactWrapper.getContactPerson().getPhoneNumber(), 
+					if (mIsSendMessage && contactWrapper.isSupportMessage())
+					{
+						MessageSender.instance().send(contactWrapper.getContactPerson().getPhoneNumber(), 
 							contactWrapper.generateShortMessage(), null, null);
+					}
 					
 					mCurWorkingIndex = 0;
 					return;
@@ -161,8 +169,11 @@ public class OneByOneWork {
 					endCall();
 					// send message
 					ContactPersonWrapper contactWrapper =  mContactPersonWrappers.get(indexOk);
-					MessageSender.instance().send(contactWrapper.getContactPerson().getPhoneNumber(), 
-							contactWrapper.generateShortMessage(), null, null);
+					if (mIsSendMessage && contactWrapper.isSupportMessage())
+					{
+						MessageSender.instance().send(contactWrapper.getContactPerson().getPhoneNumber(), 
+								contactWrapper.generateShortMessage(), null, null);
+					}
 					
 					if (mOnWorkingObserver != null)
 					{
@@ -177,7 +188,10 @@ public class OneByOneWork {
 				ContactPersonWrapper contactWrapper =  mContactPersonWrappers.get(mCurWorkingIndex);
 				Log.i(LOG_TAG, "to call : " + contactWrapper.getContactPerson().getName());
 				// call
-				MicroPhone.instance(mContext).call(contactWrapper.getContactPerson().getPhoneNumber());
+				if (mIsCall)
+				{
+					MicroPhone.instance(mContext).call(contactWrapper.getContactPerson().getPhoneNumber());
+				}
 				
 				mCurWorkingIndex++;
 				mWorkHandler.sendEmptyMessageDelayed(MSG_WHAT_CALL, mCallInternal);

@@ -8,11 +8,13 @@ import net.simonvt.menudrawer.MenuDrawer;
 
 import com.android.internal.telephony.ITelephony;
 import com.fgc.autocall.R;
+import com.fgc.autocall.Tools.StringTools;
 import com.fgc.autocall.Tools.Tools;
 import com.fgc.autocall.app.business.MessageSender;
 import com.fgc.autocall.app.business.MicroPhone;
 import com.fgc.autocall.app.component.ContactParser;
 import com.fgc.autocall.app.component.FileLoader;
+import com.fgc.autocall.app.component.StorageManagerFgc;
 import com.fgc.autocall.app.component.FileLoader.LoadObserver;
 import com.fgc.autocall.constant.Constans;
 import com.fgc.autocall.data.ContactPerson;
@@ -83,6 +85,7 @@ public class ActivityMain extends BaseActivity {
 		
 		mOneByOneWork = new OneByOneWork(this, getMainLooper());
 		mOneByOneWork.setOnWorkingObserver(mOnWorkingObserver);
+		
 	}
 
 	private void initView()
@@ -116,8 +119,23 @@ public class ActivityMain extends BaseActivity {
 	
 	private void loadContactsData()
 	{
-		String sdcardPath = Environment.getExternalStorageDirectory().getPath();
-		String filePath = sdcardPath + "/" + Constans.FileName.FILE_NAME;
+		List<String> allPaths = new StorageManagerFgc(this).getMountedStoragePaths();
+		int existContactFileIndex = -1;
+		for (int i=0; i<allPaths.size(); i++)
+		{
+			if (Tools.isExistOneFileInOneDir( Constans.FileName.FILE_NAME, allPaths.get(i)))
+			{
+				existContactFileIndex = i;
+				break;
+			}
+		}
+		if (existContactFileIndex == -1)
+		{
+			Log.w(LOG_TAG, "not exist this file !");
+			mLayoutWraning.setVisibility(View.VISIBLE);
+			return;
+		}
+		String filePath = allPaths.get(existContactFileIndex) + "/" + Constans.FileName.FILE_NAME;
 		Log.i(LOG_TAG, "file path: " + filePath);
 		FileLoader fileLoader = new FileLoader(filePath);
 		fileLoader.load(new LoadObserver() {
@@ -167,7 +185,7 @@ public class ActivityMain extends BaseActivity {
 				// start
 				int internal = mApp.getConfigManager().getCallInternal();
 				mOneByOneWork.setCallInternal(internal);
-				mOneByOneWork.startWork();
+				mOneByOneWork.startWork(mApp.getConfigManager().isCall(), mApp.getConfigManager().isSendMessage());
 			}
 		}
 		
